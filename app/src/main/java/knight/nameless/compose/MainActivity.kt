@@ -57,7 +57,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = "Test",
+            text = "Test3",
             modifier = modifier,
             Color.Blue,
             fontSize = 22.sp
@@ -69,6 +69,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     ComposeTheme {
-        Greeting("Test")
+        Greeting("Test4")
     }
 }
