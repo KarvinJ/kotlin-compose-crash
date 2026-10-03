@@ -17,11 +17,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import knight.nameless.compose.ui.theme.ComposeTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        GlobalScope.launch(Dispatchers.IO) {
+
+            withContext(Dispatchers.Main) {
+
+            }
+        }
 
         enableEdgeToEdge()
         setContent {
@@ -57,7 +68,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = "Test3",
+            text = "Test7",
             modifier = modifier,
             Color.Blue,
             fontSize = 22.sp
