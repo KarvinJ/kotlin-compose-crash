@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    fun coroutinesScope() {
+    private fun coroutinesScope() {
 
 //        The globalScope coroutine lives as long as the application does,
     //        so is a bad practice to always use this cuz rarely we need our coroutines to lives as
