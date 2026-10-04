@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
 import knight.nameless.compose.ui.theme.ComposeTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -49,6 +50,23 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
+    fun coroutinesScope() {
+
+//        The globalScope coroutine lives as long as the application does,
+    //        so is a bad practice to always use this cuz rarely we need our coroutines to lives as
+    //        long as the application
+
+//        What we need to use instead is the lifecycleScope coroutine, that lives as long as our
+    //        activities lives, it sticks to the lifecycle of the activity. And we can do everything
+        //        that we did on GlobalScope
+//        lifecycleScope.launch {
+//
+//
+//        }
+    }
+
 
     //    Async/Await calls
     private fun networkCalls() {
