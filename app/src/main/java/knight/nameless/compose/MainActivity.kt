@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,7 +50,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeTheme {
 
-                Greeting(name = "Test")
+
+//                Greeting(name = "Test")
+
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Text(text = "0")
+                    Button(onClick = {
+
+                    }) {
+                        Text(text = "Click me!")
+                    }
+                }
             }
         }
     }
@@ -64,6 +77,7 @@ class MainActivity : ComponentActivity() {
 //        And for this we use LazyColumn
 
 //        is almost the same logic as the column and the for, but here we replace this with a lazy column
+//        The same way that we have a lazy column we also have a lazy row that works the same
         LazyColumn(modifier = Modifier.fillMaxSize()) {
 
 //            and an items property and with this we indicate the quantity of times that we want
@@ -165,7 +179,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun GreetingPreview() {
         ComposeTheme {
-            Greeting("Test6")
+//            Greeting("Test6")
         }
     }
 }
