@@ -46,12 +46,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ComposeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Test",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+
+                Greeting(name = "Test")
             }
         }
     }
