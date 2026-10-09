@@ -1,7 +1,6 @@
 package knight.nameless.compose
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -9,37 +8,22 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
 import knight.nameless.compose.ui.theme.ComposeTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
-import kotlin.system.measureTimeMillis
-import kotlin.time.Duration.Companion.milliseconds
 
 class MainActivity : ComponentActivity() {
 
@@ -50,19 +34,41 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeTheme {
 
+               ButtonUpdateState()
+            }
+        }
+    }
+
+    @Composable
+    fun ButtonUpdateState() {
+
+        var count by remember {
+            mutableIntStateOf(0)
+        } //this is how we can use the state of a composable, we use remember to avoid that
+        // when the ui re-compose the value is not lost
 
 //                Greeting(name = "Test")
 
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Text(text = "0")
-                    Button(onClick = {
+//                with a column with this value with center everything inside of this column in
+        //                the middle of the screen
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = count.toString(), // every time this value changes the text will be updated,
+//                        Just thus element the other ones will not be updated
+                fontSize = 30.sp,
+            )
+            Button(onClick = { // lugar donde definimos el comportamiento del boton
 
-                    }) {
-                        Text(text = "Click me!")
-                    }
-                }
+                count++
+            }) {
+                Text(text = "Click me $count")
             }
         }
+
     }
 
     //A composable is any kotlin function that will be using in compose code
