@@ -108,7 +108,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
     @Composable
     fun NameList(names: List<String>, modifier: Modifier = Modifier) {
 
