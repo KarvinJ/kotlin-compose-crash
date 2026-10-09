@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import knight.nameless.compose.ui.theme.ComposeTheme
+import org.w3c.dom.NameList
 
 class MainActivity : ComponentActivity() {
 
@@ -100,18 +101,28 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
-            LazyColumn {
-                items(names) { currentName ->
 
-                    Text(
-                        text = currentName,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    )
+            //    This is the main advantage of using compose you can take any ui element and
+            //    convert it in a composable function and use it in any other ui
+            NameList(names = names)
+        }
+    }
 
-                    HorizontalDivider()
-                }
+
+    @Composable
+    fun NameList(names: List<String>, modifier: Modifier = Modifier) {
+
+        LazyColumn(modifier) {
+            items(names) { currentName ->
+
+                Text(
+                    text = currentName,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+
+                HorizontalDivider()
             }
         }
     }
