@@ -4,22 +4,34 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,13 +41,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import knight.nameless.compose.composables.PersonDialog
+import knight.nameless.compose.entities.Person
 import knight.nameless.compose.ui.theme.ComposeTheme
-import org.w3c.dom.NameList
+import knight.nameless.compose.composables.NetworkCall
 
 class MainActivity : ComponentActivity() {
 
@@ -46,234 +58,237 @@ class MainActivity : ComponentActivity() {
         setContent {
             ComposeTheme {
 
-                Final()
+                App()
+
+//                Final()
 //                Greeting("Test")
 //               ButtonUpdateState()
             }
         }
     }
 
+
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun Final() {
+    fun App(/*client: UserClient*/) {
 
-        var name by remember {
+        var showCreateDialog by remember { mutableStateOf(false) }
 
-            mutableStateOf("")
+        var persons by remember {
+
+            mutableStateOf(listOf<Person>())
         }
 
-//        State of list
-        var names by remember {
-
-            mutableStateOf(listOf<String>())
+        var personToEdit by remember {
+            mutableStateOf<Person?>(null)
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-        ) {
-            Row(
+        var selectedScreen by remember { mutableIntStateOf(0) }
 
-                modifier = Modifier.fillMaxWidth()
-            ) {
-//                We can use BasicTextField and outlinedTextfield for inputs
-                OutlinedTextField(
-                    value = name,// the value is the text that is currently entered in the textfield
-                    onValueChange = { text ->
+//    The MaterialTheme and scaffold They have different responsibilities:
+//- MaterialTheme defines the visual system: colors, typography, and shapes.
+//- Scaffold provides the structure for a screen: top app bar, content, floating action button,
+// bottom bar, and snack bar
 
-                        //Everytime the value of the textfield changes this function is called
-                        name = text
+        MaterialTheme {
 
-                    },
-                )
+//        Scaffold give us a standard structure on how to design the ui of our app,
+//        And also give us several components to add in our app. like floating buttons, top app
+            //        bar and bottom app bar.
+            Scaffold(
 
-                Spacer(modifier = Modifier.width(16.dp))
-                Button(
-                    onClick = {
-                        if (name.isNotBlank()) {
-                            names = names + name
-                            name = ""
+                modifier = Modifier.fillMaxSize(),
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = {
+                            Text("Registration Form")
+                        }
+                    )
+                },
+
+                floatingActionButton = {
+
+                    if (selectedScreen == 1) {
+
+                        FloatingActionButton(
+                            onClick = {
+                                personToEdit = null
+                                showCreateDialog = true
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add person"
+                            )
                         }
                     }
-                )  {
-                    Text(
-                        text = "Add"
-                    )
+                },
+
+//            adding the bottom bar
+                bottomBar = {
+
+//                we normally add the navigation bar here in the bottom bar.
+                    NavigationBar {
+
+                        NavigationBarItem(
+                            selected = selectedScreen == 0,
+                            onClick = { selectedScreen = 0 },
+                            icon = { Icon(Icons.Default.Person, null) },
+                            label = { Text("Register") }
+                        )
+
+                        NavigationBarItem(
+                            selected = selectedScreen == 1,
+                            onClick = { selectedScreen = 1 },
+                            icon = { Icon(Icons.Default.People, null) },
+                            label = { Text("People") }
+                        )
+                    }
+                }
+
+            ) { innerPadding ->
+
+                Box(Modifier.padding(innerPadding)) {
+
+                    when (selectedScreen) {
+                        0 -> NetworkCall()
+                        1 -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(innerPadding),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+
+                                if (showCreateDialog) {
+
+                                    PersonDialog(
+                                        onAdd = { person ->
+                                            persons = persons + person
+                                        },
+                                        onDismiss = {
+                                            showCreateDialog = false
+                                        },
+                                        onEdit = { person ->
+
+                                            showCreateDialog = false
+//     This code updates a person in your persons list by matching their id.
+//     It's useful for implementing the Edit operation in your CRUD app.
+                                            persons = persons.map {
+
+                                                if (it.id == person.id) {
+                                                    person
+                                                } else {
+                                                    it
+                                                }
+                                            }
+                                        },
+                                        personToEdit = personToEdit
+                                    )
+                                }
+
+                                PersonList(
+                                    persons = persons,
+//            De esta forma enviamos funciones por parametro
+                                    onDelete = { personToRemove ->
+                                        persons = persons.filter { it != personToRemove }
+                                    },
+                                    onEdit = { person ->
+
+                                        showCreateDialog = true
+                                        personToEdit = person
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
             }
-
-            //    This is the main advantage of using compose you can take any ui element and
-            //    convert it in a composable function and use it in any other ui
-            NameList(names = names)
         }
     }
 
     @Composable
-    fun NameList(names: List<String>, modifier: Modifier = Modifier) {
-
-        LazyColumn(modifier) {
-            items(names) { currentName ->
-
-                Text(
-                    text = currentName,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                )
-
-                HorizontalDivider()
-            }
-        }
-    }
-
-    @Composable
-    fun ButtonUpdateState() {
-
-        var count by remember {
-            mutableIntStateOf(0)
-        } //this is how we can use the state of a composable, we use remember to avoid that
-        // when the ui re-compose the value is not lost
-
-//                Greeting(name = "Test")
-
-//                with a column with this value with center everything inside of this column in
-        //                the middle of the screen
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+    fun PersonList(
+        persons: List<Person>,
+        onEdit: (Person) -> Unit,
+        onDelete: (Person) -> Unit,
+        modifier: Modifier = Modifier
+    ) {
+        LazyColumn(
+            modifier = modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = count.toString(), // every time this value changes the text will be updated,
-//                        Just thus element the other ones will not be updated
-                fontSize = 30.sp,
-            )
-            Button(onClick = { // lugar donde definimos el comportamiento del boton
+            items(persons) { person ->
 
-                count++
-            }) {
-                Text(text = "Click me $count")
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 2.dp
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = "${person.name} ${person.lastName}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+
+                            Text(
+                                text = person.phoneNumber,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { onEdit(person) }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit person",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { onDelete(person) }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete person",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
             }
         }
-
-    }
-
-    //A composable is any kotlin function that will be using in compose code
-    @Composable
-    fun Greeting(name: String, modifier: Modifier = Modifier) {
-
-
-//        Let's work with lists. This is the way that we need to use to implement the equivalent
-        //        to recyclerView and is the correct way to render multiple elements in the screen
-//        cuz in this way the only thing that is consuming resources are the elements that the user
-        //        is currently looking the other elements don't use resources
-//        And for this we use LazyColumn
-
-//        is almost the same logic as the column and the for, but here we replace this with a lazy column
-//        The same way that we have a lazy column we also have a lazy row that works the same
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-
-//            and an items property and with this we indicate the quantity of times that we want
-            //            to display the element inside the items
-            items(10) { i ->
-
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier.background(Color.Black)
-                )
-            }
-        }
-
-
-//        This is how we load and draw icons in compose
-//        Icon(imageVector = Icons.Default.Add, contentDescription = null) Icons module not found
-
-//        this is how we load and draw images in compose
-
-//        we can also hide ui elements with simple conditionals,
-        if (name.length < 5) {
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = null,
-                modifier = Modifier.background(Color.Black)
-            )
-        }
-
-//        we can also use loops in combination with a column for showing the same element several times
-//        Column{
-//
-//            for (i in 1..5) {
-//
-//                Image(
-//                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-//                    contentDescription = null,
-//                    modifier = Modifier.background(Color.Black)
-//                )
-//            }
-//        }
-
-//        The row and the column are the more efficient way to arrange items in a screen,
-        // This is the equivalent to a frame layout this is for arrange items horizontally,
-        // this interchange the arrangement and alignment vs the column, and apply most of the code use in the column
-//        Row(
-////            horizontalArrangement = Arrangement.End,
-////            verticalAlignment = Alignment.CenterVertically,
-//            modifier = Modifier.size(400.dp),
-//        ) {
-//
-//            Text(
-//                text = "Hello $name!",
-//                modifier = modifier.align(Alignment.CenterVertically),
-//                Color.Red,
-//                fontSize = 22.sp
-//            )
-//
-//            Text(
-//                text = "Test7",
-//                modifier = modifier,
-//                Color.Blue,
-//                fontSize = 22.sp
-//            )
-//        }
-
-//        //This is the equivalent of linear layout of XML, but in compose, this is for arrange items vertically
-//        Column(
-//            horizontalAlignment = Alignment.CenterHorizontally, // This will align the items
-//            // horizontally in the center, we can ubicate this to the start and end for left to right
-//            verticalArrangement = Arrangement.Center, // This will arrange the items vertically in the
-//            // center, we can ubicate this to the top and bottom of the screen
-//            modifier = Modifier.size(400.dp) // with this the content of the column will fill the
-//        // entire size of the screen, we can also do that for use the max width and height of the screen,
-////            and also to give ourselves the size custom
-//        ) {
-//
-//            Text(
-//                text = "Hello $name!",
-////                modifier = modifier.fillMaxSize(), // this will fill the entire size of the column
-////                Given that this text has as a parent the column with a size of 400 dp, this text
-////                is filling the max size of this 400 dp column
-//                modifier = modifier, // this will fill the entire size of the column
-//                Color.Red,
-//                fontSize = 22.sp
-//            )
-//
-//            Text(
-//                text = "Test7",
-//                modifier = modifier,
-//                Color.Blue,
-//                fontSize = 22.sp
-//            )
-//        }
     }
 
     @Preview(showBackground = true)
     @Composable
     fun GreetingPreview() {
         ComposeTheme {
-            Final()
+
+            App()
+//            Final()
 //            Greeting("Test6")
+
         }
     }
 }

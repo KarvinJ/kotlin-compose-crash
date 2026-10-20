@@ -55,6 +55,16 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.compose.material.icons.extended)
+
+    implementation(libs.ktor.client.okhttp)
+
+    //            Ktor. Since we bundle several libraries with the ktor, then we
+//            just need to call ktor to import them all.
+    implementation(libs.bundles.ktor)
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+
 
 //    now i now that I can have dependencies from other format without any problem.
 //    Need to check if there is a way to adapt this dependency to mantain the same structures of the other dependencies.
