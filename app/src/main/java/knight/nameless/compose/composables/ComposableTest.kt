@@ -1,4 +1,4 @@
-package knight.nameless.compose
+package knight.nameless.compose.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import knight.nameless.compose.R
 
 @Composable
 fun Final() {
@@ -84,8 +85,10 @@ fun Final() {
     }
 }
 
+//I can have multiple compossables in a file and just import one that use all those composables and
+// the put the other with the private modifier
 @Composable
-fun NameList(names: List<String>, modifier: Modifier = Modifier) {
+private fun NameList(names: List<String>, modifier: Modifier = Modifier) {
 
     LazyColumn(modifier) {
         items(names) { currentName ->
@@ -103,7 +106,7 @@ fun NameList(names: List<String>, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ButtonUpdateState() {
+private fun ButtonUpdateState() {
 
     var count by remember {
         mutableIntStateOf(0)
@@ -136,7 +139,7 @@ fun ButtonUpdateState() {
 
 //A composable is any kotlin function that will be using in compose code
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+private fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 
 //        Let's work with lists. This is the way that we need to use to implement the equivalent

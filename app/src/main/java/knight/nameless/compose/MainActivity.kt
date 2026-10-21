@@ -44,10 +44,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.ktor.client.engine.okhttp.OkHttp
 import knight.nameless.compose.composables.PersonDialog
 import knight.nameless.compose.entities.Person
 import knight.nameless.compose.ui.theme.ComposeTheme
 import knight.nameless.compose.composables.NetworkCall
+import knight.nameless.compose.networking.UserClient
+import knight.nameless.compose.networking.createHttpClient
 
 class MainActivity : ComponentActivity() {
 
@@ -70,7 +73,11 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun App(/*client: UserClient*/) {
+    fun App() {
+
+        val client = remember {
+            UserClient(createHttpClient(OkHttp.create()))
+        }
 
         var showCreateDialog by remember { mutableStateOf(false) }
 
@@ -151,7 +158,7 @@ class MainActivity : ComponentActivity() {
                 Box(Modifier.padding(innerPadding)) {
 
                     when (selectedScreen) {
-                        0 -> NetworkCall()
+                        0 -> NetworkCall(client)
                         1 -> {
                             Column(
                                 modifier = Modifier

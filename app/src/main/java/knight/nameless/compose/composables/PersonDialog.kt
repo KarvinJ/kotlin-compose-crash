@@ -192,7 +192,7 @@ fun PersonDialog(
     )
 }
 
-fun buildFormattedPhoneNumber(phoneNumber: String): String {
+private fun buildFormattedPhoneNumber(phoneNumber: String): String {
 
     val digitsOnly = phoneNumber.replace("\\D".toRegex(), "")
     val formattedNumber = StringBuilder()

@@ -22,11 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import knight.nameless.compose.entities.User
+import knight.nameless.compose.networking.UserClient
 import knight.nameless.compose.util.NetworkError
+import knight.nameless.compose.util.onError
+import knight.nameless.compose.util.onSuccess
 import kotlinx.coroutines.launch
 
 @Composable
-fun NetworkCall(/*client: UserClient*/) {
+fun NetworkCall(client: UserClient) {
 
     var user by remember {
         mutableStateOf<User?>(null)
@@ -57,12 +60,12 @@ fun NetworkCall(/*client: UserClient*/) {
                 isLoading = true
                 errorMessage = null
 
-//                client.getUsers().onSuccess {
-//
-//                    user = it
-//                }.onError {
-//                    errorMessage = it
-//                }
+                client.getUsers().onSuccess {
+
+                    user = it
+                }.onError {
+                    errorMessage = it
+                }
                 isLoading = false
             }
         }) {
