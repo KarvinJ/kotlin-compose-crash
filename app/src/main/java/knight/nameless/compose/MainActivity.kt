@@ -263,7 +263,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onEdit = { person ->
 
-                                        showCreateDialog = true
+                                        showPersonDialog = true
                                         personToEdit = person.toEntity()
                                     }
                                 )
