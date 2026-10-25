@@ -88,6 +88,7 @@ class MainActivity : ComponentActivity() {
         }
 
         var showCreateDialog by remember { mutableStateOf(false) }
+        var showPersonDialog by remember { mutableStateOf(false) }
 
         var persons by remember {
 
@@ -123,12 +124,13 @@ class MainActivity : ComponentActivity() {
 
                 floatingActionButton = {
 
-                    if (selectedScreen == 1) {
+                    if (selectedScreen == 1 || selectedScreen == 2) {
 
                         FloatingActionButton(
                             onClick = {
                                 personToEdit = null
                                 showCreateDialog = true
+                                showPersonDialog = true
                             }
                         ) {
                             Icon(
@@ -185,6 +187,50 @@ class MainActivity : ComponentActivity() {
                                 if (showCreateDialog) {
 
                                     PersonDialog(
+                                        personToEdit = personToEdit,
+                                        onDismiss = {
+                                            showPersonDialog = false
+                                        },
+                                        onAdd = { person ->
+                                            // Convert Person to PersonModel if necessary
+                                            viewModel.upsertPerson(person.toPersonModel())
+                                            showPersonDialog = false
+                                        },
+                                        onEdit = { person ->
+                                            // Convert Person to PersonModel if necessary
+                                            viewModel.upsertPerson(person.toPersonModel())
+                                            showPersonDialog = false
+                                        }
+                                    )
+                                }
+
+                                PersonList(
+                                    persons = persons,
+//            De esta forma enviamos funciones por parametro
+                                    onDelete = { personToRemove ->
+                                        persons = persons.filter { it != personToRemove }
+                                    },
+                                    onEdit = { person ->
+
+                                        showCreateDialog = true
+                                        personToEdit = person
+                                    }
+                                )
+                            }
+                        }
+                        2 -> {
+
+//                            Code for handling the crud with the room database
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(innerPadding),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+
+                                if (showCreateDialog) {
+
+                                    PersonDialog(
                                         onAdd = { person ->
                                             persons = persons + person
                                         },
@@ -222,8 +268,6 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                        }
-                        2 -> {
 
                         }
                     }
