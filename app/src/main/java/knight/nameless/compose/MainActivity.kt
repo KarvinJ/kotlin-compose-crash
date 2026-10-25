@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import io.ktor.client.engine.okhttp.OkHttp
 import knight.nameless.compose.composables.PersonDialog
 import knight.nameless.compose.entities.Person
@@ -52,6 +53,8 @@ import knight.nameless.compose.ui.theme.ComposeTheme
 import knight.nameless.compose.composables.NetworkCall
 import knight.nameless.compose.networking.UserClient
 import knight.nameless.compose.networking.createHttpClient
+import knight.nameless.compose.room.AppDatabase
+import knight.nameless.compose.room.PersonRepository
 
 class MainActivity : ComponentActivity() {
 
@@ -75,6 +78,10 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun App() {
+
+        val repository = PersonRepository(AppDatabase.getDatabase(this).personDao())
+
+        val viewModel = ViewModelProvider(this, PersonViewModelFactory(repository))[PersonViewModel::class.java]
 
         val client = remember {
             UserClient(createHttpClient(OkHttp.create()))
