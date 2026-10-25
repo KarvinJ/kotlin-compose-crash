@@ -152,14 +152,20 @@ class MainActivity : ComponentActivity() {
 
                         NavigationBarItem(
                             selected = selectedScreen == 1,
-                            onClick = { selectedScreen = 1 },
+                            onClick = {
+                                selectedScreen = 1
+                                showCreateDialog = false
+                            },
                             icon = { Icon(Icons.Default.People, null) },
                             label = { Text("People") }
                         )
 
                         NavigationBarItem(
                             selected = selectedScreen == 2,
-                            onClick = { selectedScreen = 2 },
+                            onClick = {
+                                selectedScreen = 2
+                                showPersonDialog = false
+                            },
                             icon = { Icon(Icons.Default.Accessibility, null) },
                             label = { Text("People") }
                         )
@@ -185,18 +191,26 @@ class MainActivity : ComponentActivity() {
                                     PersonDialog(
                                         personToEdit = personToEdit,
                                         onDismiss = {
-                                            showPersonDialog = false
+                                            showCreateDialog = false
                                         },
                                         onAdd = { person ->
-                                            // Convert Person to PersonModel if necessary
-                                            viewModel.upsertPerson(person.toPersonModel())
-                                            showPersonDialog = false
+                                            persons = persons + person
+                                            showCreateDialog = false
                                         },
                                         onEdit = { person ->
-                                            // Convert Person to PersonModel if necessary
-                                            viewModel.upsertPerson(person.toPersonModel())
-                                            showPersonDialog = false
-                                        }
+
+                                            showCreateDialog = false
+//     This code updates a person in your persons list by matching their id.
+//     It's useful for implementing the Edit operation in your CRUD app.
+                                            persons = persons.map {
+
+                                                if (it.id == person.id) {
+                                                    person
+                                                } else {
+                                                    it
+                                                }
+                                            }
+                                        },
                                     )
                                 }
 
@@ -228,16 +242,18 @@ class MainActivity : ComponentActivity() {
                                 if (showPersonDialog) {
 
                                     PersonDialog(
+
                                         onAdd = { person ->
                                             viewModel.upsertPerson(person.toPersonModel())
+                                            showPersonDialog = false
                                         },
                                         onDismiss = {
                                             showPersonDialog = false
                                         },
                                         onEdit = { person ->
 
-                                            showPersonDialog = false
                                             viewModel.upsertPerson(person.toPersonModel())
+                                            showPersonDialog = false
                                         },
                                         personToEdit = personToEdit
                                     )
