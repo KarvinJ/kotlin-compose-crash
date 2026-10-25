@@ -35,6 +35,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -51,10 +52,12 @@ import knight.nameless.compose.composables.PersonDialog
 import knight.nameless.compose.entities.Person
 import knight.nameless.compose.ui.theme.ComposeTheme
 import knight.nameless.compose.composables.NetworkCall
+import knight.nameless.compose.domain.PersonModel
 import knight.nameless.compose.networking.UserClient
 import knight.nameless.compose.networking.createHttpClient
 import knight.nameless.compose.room.AppDatabase
 import knight.nameless.compose.room.PersonRepository
+import knight.nameless.compose.room.toEntity
 
 class MainActivity : ComponentActivity() {
 
@@ -81,7 +84,12 @@ class MainActivity : ComponentActivity() {
 
         val repository = PersonRepository(AppDatabase.getDatabase(this).personDao())
 
-        val viewModel = ViewModelProvider(this, PersonViewModelFactory(repository))[PersonViewModel::class.java]
+        val viewModel = ViewModelProvider(
+            this,
+            PersonViewModelFactory(repository)
+        )[PersonViewModel::class.java]
+
+        val personsDb by viewModel.persons.collectAsState()
 
         val client = remember {
             UserClient(createHttpClient(OkHttp.create()))
@@ -218,6 +226,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+
                         2 -> {
 
 //                            Code for handling the crud with the room database
@@ -228,43 +237,34 @@ class MainActivity : ComponentActivity() {
                                 verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
 
-                                if (showCreateDialog) {
+                                if (showPersonDialog) {
 
                                     PersonDialog(
                                         onAdd = { person ->
-                                            persons = persons + person
+                                            viewModel.upsertPerson(person.toPersonModel())
                                         },
                                         onDismiss = {
-                                            showCreateDialog = false
+                                            showPersonDialog = false
                                         },
                                         onEdit = { person ->
 
-                                            showCreateDialog = false
-//     This code updates a person in your persons list by matching their id.
-//     It's useful for implementing the Edit operation in your CRUD app.
-                                            persons = persons.map {
-
-                                                if (it.id == person.id) {
-                                                    person
-                                                } else {
-                                                    it
-                                                }
-                                            }
+                                            showPersonDialog = false
+                                            viewModel.upsertPerson(person.toPersonModel())
                                         },
                                         personToEdit = personToEdit
                                     )
                                 }
 
-                                PersonList(
-                                    persons = persons,
+                                PersonListRoomDb(
+                                    persons = personsDb,
 //            De esta forma enviamos funciones por parametro
                                     onDelete = { personToRemove ->
-                                        persons = persons.filter { it != personToRemove }
+
                                     },
                                     onEdit = { person ->
 
                                         showCreateDialog = true
-                                        personToEdit = person
+                                        personToEdit = person.toEntity()
                                     }
                                 )
                             }
@@ -277,9 +277,76 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun dbRoomTest() {
+    fun PersonListRoomDb(
+        persons: List<PersonModel>,
+        onEdit: (PersonModel) -> Unit,
+        onDelete: (PersonModel) -> Unit,
+        modifier: Modifier = Modifier
+    ) {
+        LazyColumn(
+            modifier = modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(persons) { person ->
 
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 2.dp
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = "${person.name} ${person.lastName}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
 
+                            Text(
+                                text = person.phoneNumber,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { onEdit(person) }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit person",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { onDelete(person) }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete person",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Composable
