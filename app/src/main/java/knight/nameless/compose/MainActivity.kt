@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -150,6 +151,13 @@ class MainActivity : ComponentActivity() {
                             icon = { Icon(Icons.Default.People, null) },
                             label = { Text("People") }
                         )
+
+                        NavigationBarItem(
+                            selected = selectedScreen == 2,
+                            onClick = { selectedScreen = 2 },
+                            icon = { Icon(Icons.Default.Accessibility, null) },
+                            label = { Text("People") }
+                        )
                     }
                 }
 
@@ -208,10 +216,19 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
+                        2 -> {
+
+                        }
                     }
                 }
             }
         }
+    }
+
+    @Composable
+    fun dbRoomTest() {
+
+
     }
 
     @Composable

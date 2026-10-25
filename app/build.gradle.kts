@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -46,16 +47,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
+
 //    lifeCycle coroutines dependencies.
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.compose.material.icons.extended)
 
     implementation(libs.ktor.client.okhttp)
@@ -66,8 +61,24 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
 
 
+//    Room database dependencies
+    val room_version = "3.0.3"
+
+    implementation("androidx.room3:room3-runtime:$room_version")
+    ksp("androidx.room3:room3-compiler:$room_version")
+
+
 
 //    now i now that I can have dependencies from other format without any problem.
 //    Need to check if there is a way to adapt this dependency to mantain the same structures of the other dependencies.
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
+
+//    Debug/Test dependencies
+    testImplementation(libs.junit)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }
