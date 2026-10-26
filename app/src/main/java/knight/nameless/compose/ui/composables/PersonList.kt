@@ -1,4 +1,4 @@
-package knight.nameless.compose.composables
+package knight.nameless.compose.ui.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import knight.nameless.compose.entities.Person
+import knight.nameless.compose.data.entities.Person
 
 @Composable
 fun PersonList(

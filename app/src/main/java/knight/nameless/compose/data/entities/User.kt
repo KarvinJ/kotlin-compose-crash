@@ -1,4 +1,4 @@
-package knight.nameless.compose.entities
+package knight.nameless.compose.data.entities
 
 import kotlinx.serialization.Serializable
 

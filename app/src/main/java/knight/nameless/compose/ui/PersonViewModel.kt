@@ -1,11 +1,10 @@
-package knight.nameless.compose
+package knight.nameless.compose.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import knight.nameless.compose.domain.PersonModel
-import knight.nameless.compose.entities.Person
-import knight.nameless.compose.room.PersonRepository
+import knight.nameless.compose.data.PersonRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch

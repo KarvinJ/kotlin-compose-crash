@@ -1,7 +1,8 @@
-package knight.nameless.compose.room
+package knight.nameless.compose.data
 
+import knight.nameless.compose.data.dao.PersonDao
 import knight.nameless.compose.domain.PersonModel
-import knight.nameless.compose.entities.Person
+import knight.nameless.compose.data.entities.Person
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

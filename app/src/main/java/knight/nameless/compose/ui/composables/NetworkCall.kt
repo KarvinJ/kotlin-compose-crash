@@ -1,4 +1,4 @@
-package knight.nameless.compose.composables
+package knight.nameless.compose.ui.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,11 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import knight.nameless.compose.entities.User
+import knight.nameless.compose.data.entities.User
 import knight.nameless.compose.networking.UserClient
-import knight.nameless.compose.util.NetworkError
-import knight.nameless.compose.util.onError
-import knight.nameless.compose.util.onSuccess
+import knight.nameless.compose.networking.util.NetworkError
+import knight.nameless.compose.networking.util.onError
+import knight.nameless.compose.networking.util.onSuccess
 import kotlinx.coroutines.launch
 
 @Composable

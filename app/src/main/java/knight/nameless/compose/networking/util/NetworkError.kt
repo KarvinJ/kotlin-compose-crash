@@ -1,4 +1,4 @@
-package knight.nameless.compose.util
+package knight.nameless.compose.networking.util
 
 enum class NetworkError : Error {
     REQUEST_TIMEOUT,

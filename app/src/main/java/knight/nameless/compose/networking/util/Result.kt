@@ -1,9 +1,9 @@
-package knight.nameless.compose.util
+package knight.nameless.compose.networking.util
 
 //Defining the class for handling our result from the endpoint calls
 sealed interface Result<out D, out E: Error> {
     data class Success<out D>(val data: D): Result<D, Nothing>
-    data class Error<out E: knight.nameless.compose.util.Error>(val error: E): Result<Nothing, E>
+    data class Error<out E: knight.nameless.compose.networking.util.Error>(val error: E): Result<Nothing, E>
 }
 
 inline fun <T, E: Error, R> Result<T, E>.map(map: (T) -> R): Result<R, E> {

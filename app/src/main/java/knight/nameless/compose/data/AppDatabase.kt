@@ -1,10 +1,11 @@
-package knight.nameless.compose.room
+package knight.nameless.compose.data
 
 import android.content.Context
 import androidx.room3.Database
 import androidx.room3.Room
 import androidx.room3.RoomDatabase
-import knight.nameless.compose.entities.Person
+import knight.nameless.compose.data.dao.PersonDao
+import knight.nameless.compose.data.entities.Person
 
 @Database(
     entities = [Person::class],

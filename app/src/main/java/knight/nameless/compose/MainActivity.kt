@@ -35,17 +35,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import io.ktor.client.engine.okhttp.OkHttp
-import knight.nameless.compose.composables.PersonDialog
-import knight.nameless.compose.entities.Person
+import knight.nameless.compose.ui.composables.PersonDialog
+import knight.nameless.compose.data.entities.Person
 import knight.nameless.compose.ui.theme.ComposeTheme
-import knight.nameless.compose.composables.NetworkCall
-import knight.nameless.compose.composables.PersonList
-import knight.nameless.compose.composables.PersonListRoom
+import knight.nameless.compose.ui.composables.NetworkCall
+import knight.nameless.compose.ui.composables.PersonList
+import knight.nameless.compose.ui.composables.PersonListRoom
 import knight.nameless.compose.networking.UserClient
 import knight.nameless.compose.networking.createHttpClient
-import knight.nameless.compose.room.AppDatabase
-import knight.nameless.compose.room.PersonRepository
-import knight.nameless.compose.room.toEntity
+import knight.nameless.compose.data.AppDatabase
+import knight.nameless.compose.data.PersonRepository
+import knight.nameless.compose.data.toEntity
+import knight.nameless.compose.ui.PersonViewModel
+import knight.nameless.compose.ui.PersonViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
@@ -113,7 +115,15 @@ class MainActivity : ComponentActivity() {
                 topBar = {
                     CenterAlignedTopAppBar(
                         title = {
-                            Text("Registration Form")
+
+                            if (selectedScreen == 0) {
+
+                                Text("Network Test")
+                            }
+                            else {
+
+                                Text("Registration Form")
+                            }
                         }
                     )
                 },
