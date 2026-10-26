@@ -32,6 +32,13 @@ class PersonViewModel(
             personRepository.upsert(person)
         }
     }
+
+    fun deletePerson(person: PersonModel) {
+
+        viewModelScope.launch {
+            personRepository.delete(person)
+        }
+    }
 }
 
 //Esto va de la mano con las inyecciones de dependencias de koin, pero mientras tanto podemos

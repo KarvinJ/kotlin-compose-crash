@@ -263,6 +263,7 @@ class MainActivity : ComponentActivity() {
                                     persons = personsDb,
                                     onDelete = { personToRemove ->
 
+                                        viewModel.deletePerson(personToRemove)
                                     },
                                     onEdit = { person ->
 
