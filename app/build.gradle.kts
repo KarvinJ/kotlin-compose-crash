@@ -69,7 +69,7 @@ dependencies {
 
 //    now i now that I can have dependencies from other format without any problem.
 //    Need to check if there is a way to adapt this dependency to mantain the same structures of the other dependencies.
-    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
+    runtimeOnly(libs.kotlinx.coroutines.core)
 
 //    Debug/Test dependencies
     testImplementation(libs.junit)
